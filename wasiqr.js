@@ -56,19 +56,19 @@ router.get('/', async (req, res) => {
 					let data = fs.readFileSync(__dirname + `/temp/${id}/creds.json`);
 					await delay(800);
 				   let b64data = Buffer.from(data).toString('base64');
-				   let session = await Qr_Code_By_Wasi_Tech.sendMessage(Qr_Code_By_Wasi_Tech.user.id, { text: 'prince_md-' + b64data });
+				   let session = await Qr_Code_By_Wasi_Tech.sendMessage(Qr_Code_By_Wasi_Tech.user.id, { text: 'DELTA_BOT-' + b64data });
 	
 				   let WASI_MD_TEXT = `
 ╔════◇
-║ _You Have Completed the First Step to Deploy a Whatsapp Bot._
+║ _You Have Completed the First Step to Deploy a DELTA BOT._
 ╚════════════════════════╝
 ╔═════◇
 ║  『••• 𝗩𝗶𝘀𝗶𝘁 𝗙𝗼𝗿 𝗛𝗲𝗹𝗽 •••』
-║❒ *Ytube:* _youtube.com/@princetech11_
-║❒ *Owner:* _t.me/faraday_11_
-║❒ *Repo:* _https://github.com/Mayelprince/PRINCE-MDXI_
-║❒ *WaChannel:* _https://whatsapp.com/channel/0029Vakd0RY35fLr1MUiwO3O_
-║❒ *Telechannel:* _https://t.me/princetechbot_
+║❒ *Ytube:* _COMING SOON!_
+║❒ *Owner:* _wa.me/256789810043_wa.me/263788521064_
+║❒ *Repo:* _https://github.com/Frontier-Lord200/DELTA-MD-V1_
+║❒ *WaChannel:* _https://whatsapp.com/channel/0029VbABN6947Xe9PIApgG47_
+║❒ *Telechannel:* _https://t.me/frontdelta_
 ╚════════════════════════╝`
 	 await Qr_Code_By_Wasi_Tech.sendMessage(Qr_Code_By_Wasi_Tech.user.id,{text:WASI_MD_TEXT},{quoted:session})
 
