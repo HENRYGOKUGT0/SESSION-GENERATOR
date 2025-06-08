@@ -1,92 +1,102 @@
-const PastebinAPI = require('pastebin-js'),
-pastebin = new PastebinAPI('EMWTMkQAVfJa9kM-MRUrxd5Oku1U7pgL')
-const {makeid} = require('./id');
 const express = require('express');
 const fs = require('fs');
-let router = express.Router()
-const pino = require("pino");
+const path = require('path');
+const pino = require('pino');
+const { makeid } = require('./id');
 const {
-    default: Gifted_Tech,
-    useMultiFileAuthState,
-    delay,
-    makeCacheableSignalKeyStore,
-    Browsers
-} = require("maher-zubair-baileys");
+  default: makeWASocket,
+  useMultiFileAuthState,
+  makeCacheableSignalKeyStore,
+  Browsers,
+  delay
+} = require('@whiskeysockets/baileys');
 
-function removeFile(FilePath){
-    if(!fs.existsSync(FilePath)) return false;
-    fs.rmSync(FilePath, { recursive: true, force: true })
- };
+const router = express.Router();
+
+function removeFile(FilePath) {
+  if (fs.existsSync(FilePath)) {
+    fs.rmSync(FilePath, { recursive: true, force: true });
+  }
+}
+
 router.get('/', async (req, res) => {
-    const id = makeid();
-    let num = req.query.number;
-        async function GIFTED_MD_PAIR_CODE() {
-        const {
-            state,
-            saveCreds
-        } = await useMultiFileAuthState('./temp/'+id)
-     try {
-            let Pair_Code_By_Gifted_Tech = Gifted_Tech({
-                auth: {
-                    creds: state.creds,
-                    keys: makeCacheableSignalKeyStore(state.keys, pino({level: "fatal"}).child({level: "fatal"})),
-                },
-                printQRInTerminal: false,
-                logger: pino({level: "fatal"}).child({level: "fatal"}),
-                browser: ["WhatsApp", "Windows", "10.0"]
-             });
-             if(!Pair_Code_By_Gifted_Tech.authState.creds.registered) {
-                await delay(1500);
-                        num = num.replace(/[^0-9]/g,'');
-                            const code = await Pair_Code_By_Gifted_Tech.requestPairingCode(num)
-                 if(!res.headersSent){
-                 await res.send({code});
-                     }
-                 }
-            Pair_Code_By_Gifted_Tech.ev.on('creds.update', saveCreds)
-            Pair_Code_By_Gifted_Tech.ev.on("connection.update", async (s) => {
-                const {
-                    connection,
-                    lastDisconnect
-                } = s;
-                if (connection == "open") {
-                await delay(5000);
-                let data = fs.readFileSync(__dirname + `/temp/${id}/creds.json`);
-                await delay(800);
-               let b64data = Buffer.from(data).toString('base64');
-               let session = await Pair_Code_By_Gifted_Tech.sendMessage(Pair_Code_By_Gifted_Tech.user.id, { text: 'PRINCE-MDX~' + b64data });
+  const id = makeid();
+  let number = req.query.number;
 
-               let GIFTED_MD_TEXT = `
+  if (!number) {
+    return res.status(400).send({ error: 'Missing number in query ?number=' });
+  }
+
+  number = number.replace(/[^0-9]/g, '');
+
+  async function startPairing() {
+    const { state, saveCreds } = await useMultiFileAuthState('./temp/' + id);
+
+    try {
+      const sock = makeWASocket({
+        logger: pino({ level: 'silent' }),
+        printQRInTerminal: false,
+        browser: Browsers.macOS('Safari'),
+        auth: {
+          creds: state.creds,
+          keys: makeCacheableSignalKeyStore(state.keys, pino({ level: 'silent' })),
+        }
+      });
+
+      sock.ev.on('creds.update', saveCreds);
+
+      await delay(1500);
+      const code = await sock.requestPairingCode(number);
+
+      if (!res.headersSent) {
+        res.send({ code });
+      }
+
+      sock.ev.on('connection.update', async ({ connection, lastDisconnect }) => {
+        if (connection === 'open') {
+          await delay(5000);
+
+          const filePath = path.join(__dirname, 'temp', id, 'creds.json');
+          const creds = fs.readFileSync(filePath);
+          const b64data = Buffer.from(creds).toString('base64');
+
+          const session = await sock.sendMessage(sock.user.id, {
+            text: 'DELTA_BOT~' + b64data
+          });
+
+          const message = `
 ╔════◇
-║ _You Have Completed the First Step to Deploy a DELTA BOT._
+║ You Have Completed the First Step to Deploy a DELTA BOT.
 ╚════════════════════════╝
 ╔═════◇
-║  『••• 𝗩𝗶𝘀𝗶𝘁 𝗙𝗼𝗿 𝗛𝗲𝗹𝗽 •••』
-║❒ *How to deploy:* _coming soon!_
-║❒ *Owner:* _wa.me/256789810043_wa.me/263788521064_
-║❒ *Repo:* _https://github.com/Frontier-Lord200/DELTA-MD-V1_
-║❒ *WaChannel:* _https://whatsapp.com/channel/0029VbABN6947Xe9PIApgG47_
-║❒ *Telechannel:* _https://t.me/frontdelta_
-╚════════════════════════╝`
- await Pair_Code_By_Gifted_Tech.sendMessage(Pair_Code_By_Gifted_Tech.user.id,{text:GIFTED_MD_TEXT},{quoted:session})
- 
+║  『••• 𝗩𝗶𝘀𝗶𝘁 𝗙𝗼𝗿 𝗛𝗲𝗹𝗽 •••』
+║❒ Ytube: COMING SOON!
+║❒ Owner: wa.me/256789810043_wa.me/263788521064
+║❒ Repo: https://github.com/Frontier-Lord200/DELTA-MD-V1
+║❒ WaChannel: https://whatsapp.com/channel/0029VbABN6947Xe9PIApgG47
+║❒ Telechannel: https://t.me/frontdelta
+╚════════════════════════╝`;
 
-        await delay(100);
-        await Pair_Code_By_Gifted_Tech.ws.close();
-        return await removeFile('./temp/'+id);
-            } else if (connection === "close" && lastDisconnect && lastDisconnect.error && lastDisconnect.error.output.statusCode != 401) {
-                    await delay(10000);
-                    GIFTED_MD_PAIR_CODE();
-                }
-            });
-        } catch (err) {
-            console.log("service restated");
-            await removeFile('./temp/'+id);
-         if(!res.headersSent){
-            await res.send({code:"Service Unavailable"});
-         }
+          await sock.sendMessage(sock.user.id, { text: message }, { quoted: session });
+
+          await delay(1000);
+          await sock.ws.close();
+          removeFile('./temp/' + id);
+        } else if (connection === 'close' && lastDisconnect?.error?.output?.statusCode !== 401) {
+          await delay(10000);
+          startPairing(); // retry
         }
+      });
+    } catch (err) {
+      console.error('Pairing error:', err);
+      removeFile('./temp/' + id);
+      if (!res.headersSent) {
+        res.status(503).send({ code: 'Service Unavailable' });
+      }
     }
-    return await GIFTED_MD_PAIR_CODE()
+  }
+
+  await startPairing();
 });
-module.exports = router
+
+module.exports = router;
