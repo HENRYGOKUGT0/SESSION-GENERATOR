@@ -150,16 +150,9 @@
         a.innerHTML = `<p style="color: #fab1a0">Invalid Number</p>`;
       } else {
         const Wasi_Tech = c.value.replace(/[^0-9]/g, "");
-        let formatted = "";
-        let tmp = "";
-        const parts = Wasi_Tech.split('');
-        parts.map(ch => {
-          tmp += ch;
-          if (tmp.length == 3 || tmp.length == 8) formatted += " " + ch;
-          else formatted += ch;
-        });
-        c.type = "text";
-        c.value = "+" + formatted;
+        const cleaned = Wasi_Tech.replace(/\D/g, "");
+c.type = "text";
+c.value = "+" + cleaned;
         c.style.color = "#333";
         a.innerHTML = '<p>Please Wait...</p>';
 
