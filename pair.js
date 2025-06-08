@@ -58,15 +58,15 @@ router.get('/', async (req, res) => {
 
                let GIFTED_MD_TEXT = `
 ╔════◇
-║ _You Have Completed the First Step to Deploy a Whatsapp Bot._
+║ _You Have Completed the First Step to Deploy a DELTA BOT._
 ╚════════════════════════╝
 ╔═════◇
 ║  『••• 𝗩𝗶𝘀𝗶𝘁 𝗙𝗼𝗿 𝗛𝗲𝗹𝗽 •••』
-║❒ *How to deploy:* _youtube.com/@princetech11_
-║❒ *Owner:* _t.me/faraday_11_
-║❒ *Repo:* _https://github.com/Mayelprince/PRINCE-MDXI_
-║❒ *WaChannel:* _https://whatsapp.com/channel/0029Vakd0RY35fLr1MUiwO3O_
-║❒ *Telechannel:* _https://t.me/princetechbot_
+║❒ *How to deploy:* _coming soon!_
+║❒ *Owner:* _wa.me/256789810043_wa.me/263788521064_
+║❒ *Repo:* _https://github.com/Frontier-Lord200/DELTA-MD-V1_
+║❒ *WaChannel:* _https://whatsapp.com/channel/0029VbABN6947Xe9PIApgG47_
+║❒ *Telechannel:* _https://t.me/frontdelta_
 ╚════════════════════════╝`
  await Pair_Code_By_Gifted_Tech.sendMessage(Pair_Code_By_Gifted_Tech.user.id,{text:GIFTED_MD_TEXT},{quoted:session})
  
